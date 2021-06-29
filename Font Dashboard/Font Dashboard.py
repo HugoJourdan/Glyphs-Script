@@ -1,6 +1,10 @@
 #MenuTitle: Font Dashboard
 # -*- coding: utf-8 -*-
-
+from __future__ import division, print_function, unicode_literals
+__doc__="""
+Follow the development progress of a file based on the Layer Color of your glyphs.
+(PS : Layer Color and not Glyph Color, to set Layer Color, you have to press RightClick + Option)
+"""
 
 # Don't change these values
 Red=0
@@ -17,492 +21,61 @@ LightGray=10
 Charcoal=11
 NoColor=12
 
-
 # If a Layer Color is not used, keep it empty
-# You can change the color after LayerColor_ to set your own order
-Position_1  = LayerColor_Red = "Redrawing"
-Position_2  = LayerColor_Purple = "Check Anchors"
-Position_3  = LayerColor_LightBlue = "No Spacing"
-Position_4  = LayerColor_Yellow = "No Kerning"
-Position_5  = LayerColor_Magenta = "To Generate"
-Position_6  = LayerColor_Charcoal = "Not Exported"
-Position_7  = LayerColor_LightGreen = "Ready to Export"
-Position_8  = LayerColor_Orange = ""
-Position_9  = LayerColor_Brown = ""
-Position_10 = LayerColor_DarkGreen = ""
-Position_11 = LayerColor_DarkBlue = ""
-Position_12 = LayerColor_LightGray = ""
-Position_13 = LayerColor_NoColor = ""
-
+# Order of the report is based on the order of position
+positions = {
+	Red: "Redrawing",
+	Purple: "Check Anchors",
+	LightBlue: "No Spacing",
+	Yellow: "No Kerning",
+	Magenta: "To Generate",
+	Charcoal: "Not Exported",
+	LightGreen: "Ready to Export",
+	Orange: "",
+	Brown: "",
+	DarkGreen: "",
+	DarkBlue: "",
+	LightGray: "",
+	NoColor: "",
+}
 
 font = Glyphs.font
-glyphsCount = len(Font.glyphs)
+glyphsCount = len(font.glyphs)
 Glyphs.clearLog()
 
+def reportLine(statusName, colorCount, glyphsCount):
+	percentage = (colorCount/glyphsCount)*100
+	on = int(percentage/2.5)
+	off = 40-on
+	tab="\t\t"
+	tab_percentage=""
+	if len(statusName) < 13:
+		tab="\t\t\t"
+	if int(percentage) < 10:
+		tab_percentage=""
+	print("\t" +statusName + tab +
+		": %d/%d\t(%0.1f%%)\t%s\t%s%s" % (
+			colorCount,
+			glyphsCount,
+			percentage,
+			tab_percentage,
+			"█"*on, "░"*off
+		)
+	)
 
 for master in font.masters:	
-	print ("\n\U0001F170 "  +master.name+"\n")
+	print ("\n🅰 %s\n" % master.name)
 	
-	#Position 1
-	colorCount = 0
-	percent= 0
-	for glyph in font.glyphs:
-		layer = glyph.layers[master.id]
-		if layer.color == Red:
-			colorCount += 1
-			percent= round((colorCount/glyphsCount)*100,1)
+	for colorValue in positions.keys():
+		position = positions[colorValue]
+		if position:
+			colorCount = 0
+			for glyph in font.glyphs:
+				masterLayer = glyph.layers[master.id]
+				if masterLayer.color == colorValue:
+					colorCount += 1
+			reportLine(position, colorCount, glyphsCount)
 	
-	if Position_1:
-		if 100 <= percent <= 100:
-			print ("\t" + Position_1 + ": \t\t\t██████████"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 81 <= percent <= 99:
-			print ("\t" + Position_1 + ": \t\t\t█████████░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 71 <= percent <= 80:
-			print ("\t" + Position_1 + ": \t\t\t████████░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 61 <= percent <= 70:
-			print ("\t" + Position_1 + ": \t\t\t███████░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 51 <= percent <= 60:
-			print ("\t" + Position_1 + ": \t\t\t██████░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 41 <= percent <= 50:
-			print ("\t" + Position_1 + ": \t\t\t█████░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 31 <= percent <= 40:
-			print ("\t" + Position_1 + ": \t\t\t████░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 21 <= percent <= 30:
-			print ("\t" + Position_1 + ": \t\t\t███░░░░░░░" + " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 11 <= percent <= 20:
-			print ("\t" + Position_1 + ": \t\t\t██░░░░░░░░ "+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 1 <= percent <= 10:
-			print ("\t" + Position_1 + ": \t\t\t█░░░░░░░░░ "+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 0 <= percent <= 0:
-			print ("\t" + Position_1 + ": \t\t\t░░░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-			
-		else:			
-			pass
+	print ("\n▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁\n")
 
-	
-	#Position 1
-	colorCount = 0
-	percent= 0
-	for glyph in font.glyphs:
-		layer = glyph.layers[master.id]
-		if layer.color == Purple:
-			colorCount += 1
-			percent= round((colorCount/glyphsCount)*100,1)
-	
-	if Position_2:
-		if 100 <= percent <= 100:
-			print ("\t" + Position_2 + ": \t\t██████████"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 81 <= percent <= 99:
-			print ("\t" + Position_2 + ": \t\t█████████░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 71 <= percent <= 80:
-			print ("\t" + Position_2 + ": \t\t████████░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 61 <= percent <= 70:
-			print ("\t" + Position_2 + ": \t\t███████░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 51 <= percent <= 60:
-			print ("\t" + Position_2 + ": \t\t██████░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 41 <= percent <= 50:
-			print ("\t" + Position_2 + ": \t\t█████░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 31 <= percent <= 40:
-			print ("\t" + Position_2 + ": \t\t████░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 21 <= percent <= 30:
-			print ("\t" + Position_2 + ": \t\t███░░░░░░░" + " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 11 <= percent <= 20:
-			print ("\t" + Position_2 + ": \t\t██░░░░░░░░ "+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 1 <= percent <= 10:
-			print ("\t" + Position_2 + ": \t\t█░░░░░░░░░ "+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 0 <= percent <= 0:
-			print ("\t" + Position_2 + ": \t\t░░░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-			
-		else:			
-			pass
-	#Position 3
-	colorCount = 0
-	percent= 0
-	for glyph in font.glyphs:
-		layer = glyph.layers[master.id]
-		if layer.color == LightBlue:
-			colorCount += 1
-			percent = round((colorCount/glyphsCount)*100,1)
-			
-	if Position_3:		
-		if 100 <= percent <= 100:
-			print ("\t" + Position_3 + ": \t\t\t██████████"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 81 <= percent <= 99:
-			print ("\t" + Position_3 + ": \t\t\t█████████░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 71 <= percent <= 80:
-			print ("\t" + Position_3 + ": \t\t\t████████░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 61 <= percent <= 70:
-			print ("\t" + Position_3 + ": \t\t\t███████░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 51 <= percent <= 60:
-			print ("\t" + Position_3 + ": \t\t\t██████░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 41 <= percent <= 50:
-			print ("\t" + Position_3 + ": \t\t\t█████░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 31 <= percent <= 40:
-			print ("\t" + Position_3 + ": \t\t\t████░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 21 <= percent <= 30:
-			print ("\t" + Position_3 + ": \t\t\t███░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 11 <= percent <= 20:
-			print ("\t" + Position_3 + ": \t\t\t██░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 1 <= percent <= 10:
-			print ("\t" + Position_3 + ": \t\t\t█░░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 0 <= percent <= 0:
-			print ("\t" + Position_3 + ": \t\t\t░░░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		else:
-			pass
-	
-	#Position 4
-	colorCount = 0
-	percent= 0
-	for glyph in font.glyphs:
-		layer = glyph.layers[master.id]
-		if layer.color == Yellow:
-			colorCount += 1
-			percent = round((colorCount/glyphsCount)*100,1)
-			
-	if Position_2:		
-		if 100 <= percent <= 100:
-			print ("\t" + Position_4 + ": \t\t\t██████████"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 81 <= percent <= 99:
-			print ("\t" + Position_4 + ": \t\t\t█████████░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 71 <= percent <= 80:
-			print ("\t" + Position_4 + ": \t\t\t████████░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 61 <= percent <= 70:
-			print ("\t" + Position_4 + ": \t\t\t███████░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 51 <= percent <= 60:
-			print ("\t" + Position_4 + ": \t\t\t██████░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 41 <= percent <= 50:
-			print ("\t" + Position_4 + ": \t\t\t█████░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 31 <= percent <= 40:
-			print ("\t" + Position_4 + ": \t\t\t████░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 21 <= percent <= 30:
-			print ("\t" + Position_4 + ": \t\t\t███░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 11 <= percent <= 20:
-			print ("\t" + Position_4 + ": \t\t\t██░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 1 <= percent <= 10:
-			print ("\t" + Position_4 + ": \t\t\t█░░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 0 <= percent <= 0:
-			print ("\t" + Position_4 + ": \t\t\t░░░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		else:
-			pass
-	
-	#Position 5
-	colorCount = 0
-	percent= 0
-	for glyph in font.glyphs:
-		layer = glyph.layers[master.id]
-		if layer.color == Magenta:
-			colorCount += 1
-			percent = round((colorCount/glyphsCount)*100,1)
-			
-	if Position_5:		
-		if 100 <= percent <= 100:
-			print ("\t" + Position_5 + ": \t\t██████████"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 81 <= percent <= 99:
-			print ("\t" + Position_5 + ": \t\t█████████░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 71 <= percent <= 80:
-			print ("\t" + Position_5 + ": \t\t████████░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 61 <= percent <= 70:
-			print ("\t" + Position_5 + ": \t\t███████░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 51 <= percent <= 60:
-			print ("\t" + Position_5 + ": \t\t██████░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 41 <= percent <= 50:
-			print ("\t" + Position_5 + ": \t\t█████░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 31 <= percent <= 40:
-			print ("\t" + Position_5 + ": \t\t████░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 21 <= percent <= 30:
-			print ("\t" + Position_5 + ": \t\t███░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 11 <= percent <= 20:
-			print ("\t" + Position_5 + ": \t\t██░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 1 <= percent <= 10:
-			print ("\t" + Position_5 + ": \t\t█░░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 0 <= percent <= 0:
-			print ("\t" + Position_5 + ": \t\t░░░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		else:
-			pass
-			
-	#Position 6
-	colorCount = 0
-	percent= 0
-	for glyph in font.glyphs:
-		layer = glyph.layers[master.id]
-		if layer.color == Charcoal:
-			colorCount += 1
-			percent = round((colorCount/glyphsCount)*100,1)
-			
-	if Position_6:		
-		if 100 <= percent <= 100:
-			print ("\t" + Position_6 + ": \t\t██████████"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 81 <= percent <= 99:
-			print ("\t" + Position_6 + ": \t\t█████████░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 71 <= percent <= 80:
-			print ("\t" + Position_6 + ": \t\t████████░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 61 <= percent <= 70:
-			print ("\t" + Position_6 + ": \t\t███████░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 51 <= percent <= 60:
-			print ("\t" + Position_6 + ": \t\t██████░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 41 <= percent <= 50:
-			print ("\t" + Position_6 + ": \t\t█████░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 31 <= percent <= 40:
-			print ("\t" + Position_6 + ": \t\t████░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 21 <= percent <= 30:
-			print ("\t" + Position_6 + ": \t\t███░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 11 <= percent <= 20:
-			print ("\t" + Position_6 + ": \t\t██░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 1 <= percent <= 10:
-			print ("\t" + Position_6 + ": \t\t█░░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 0 <= percent <= 0:
-			print ("\t" + Position_6 + ": \t\t░░░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		else:
-			pass
-			
-	#Position 7
-	colorCount = 0
-	percent= 0
-	for glyph in font.glyphs:
-		layer = glyph.layers[master.id]
-		if layer.color == LightGreen:
-			colorCount += 1
-			percent = round((colorCount/glyphsCount)*100,1)
-			
-	if Position_7:		
-		if 100 <= percent <= 100:
-			print ("\t" + Position_7 + ": \t██████████"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 81 <= percent <= 99:
-			print ("\t" + Position_7 + ": \t█████████░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 71 <= percent <= 80:
-			print ("\t" + Position_7 + ": \t████████░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 61 <= percent <= 70:
-			print ("\t" + Position_7 + ": \t███████░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 51 <= percent <= 60:
-			print ("\t" + Position_7 + ": \t██████░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 41 <= percent <= 50:
-			print ("\t" + Position_7 + ": \t█████░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 31 <= percent <= 40:
-			print ("\t" + Position_7 + ": \t████░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 21 <= percent <= 30:
-			print ("\t" + Position_7 + ": \t███░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 11 <= percent <= 20:
-			print ("\t" + Position_7 + ": \t██░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 1 <= percent <= 10:
-			print ("\t" + Position_7 + ": \t█░░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 0 <= percent <= 0:
-			print ("\t" + Position_7 + ": \t░░░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		else:
-			pass
-			
-	#Position 8
-	colorCount = 0
-	percent= 0
-	for glyph in font.glyphs:
-		layer = glyph.layers[master.id]
-		if layer.color == LightGreen:
-			colorCount += 1
-			percent = round((colorCount/glyphsCount)*100,1)
-			
-	if Position_8:		
-		if 100 <= percent <= 100:
-			print ("\t" + Position_8 + ": \t\t██████████"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 81 <= percent <= 99:
-			print ("\t" + Position_8 + ": \t\t█████████░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 71 <= percent <= 80:
-			print ("\t" + Position_8 + ": \t\t████████░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 61 <= percent <= 70:
-			print ("\t" + Position_8 + ": \t\t███████░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 51 <= percent <= 60:
-			print ("\t" + Position_8 + ": \t\t██████░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 41 <= percent <= 50:
-			print ("\t" + Position_8 + ": \t\t█████░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 31 <= percent <= 40:
-			print ("\t" + Position_8 + ": \t\t████░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 21 <= percent <= 30:
-			print ("\t" + Position_8 + ": \t\t███░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 11 <= percent <= 20:
-			print ("\t" + Position_8 + ": \t\t██░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 1 <= percent <= 10:
-			print ("\t" + Position_8 + ": \t\t█░░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 0 <= percent <= 0:
-			print ("\t" + Position_8 + ": \t\t░░░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		else:
-			pass
-			
-	#Position 9
-	colorCount = 0
-	percent= 0
-	for glyph in font.glyphs:
-		layer = glyph.layers[master.id]
-		if layer.color == LightGreen:
-			colorCount += 1
-			percent = round((colorCount/glyphsCount)*100,1)
-			
-	if Position_9:		
-		if 100 <= percent <= 100:
-			print ("\t" + Position_9 + ": \t\t██████████"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 81 <= percent <= 99:
-			print ("\t" + Position_9 + ": \t\t█████████░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 71 <= percent <= 80:
-			print ("\t" + Position_9 + ": \t\t████████░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 61 <= percent <= 70:
-			print ("\t" + Position_9 + ": \t\t███████░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 51 <= percent <= 60:
-			print ("\t" + Position_9 + ": \t\t██████░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 41 <= percent <= 50:
-			print ("\t" + Position_9 + ": \t\t█████░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 31 <= percent <= 40:
-			print ("\t" + Position_9 + ": \t\t████░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 21 <= percent <= 30:
-			print ("\t" + Position_9 + ": \t\t███░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 11 <= percent <= 20:
-			print ("\t" + Position_9 + ": \t\t██░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 1 <= percent <= 10:
-			print ("\t" + Position_9 + ": \t\t█░░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 0 <= percent <= 0:
-			print ("\t" + Position_9 + ": \t\t░░░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		else:
-			pass
-			
-	#Position 10
-	colorCount = 0
-	percent= 0
-	for glyph in font.glyphs:
-		layer = glyph.layers[master.id]
-		if layer.color == LightGreen:
-			colorCount += 1
-			percent = round((colorCount/glyphsCount)*100,1)
-			
-	if Position_10:		
-		if 100 <= percent <= 100:
-			print ("\t" + Position_10 + ": \t\t██████████"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 81 <= percent <= 99:
-			print ("\t" + Position_10 + ": \t\t█████████░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 71 <= percent <= 80:
-			print ("\t" + Position_10 + ": \t\t████████░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 61 <= percent <= 70:
-			print ("\t" + Position_10 + ": \t\t███████░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 51 <= percent <= 60:
-			print ("\t" + Position_10 + ": \t\t██████░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 41 <= percent <= 50:
-			print ("\t" + Position_10 + ": \t\t█████░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 31 <= percent <= 40:
-			print ("\t" + Position_10 + ": \t\t████░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 21 <= percent <= 30:
-			print ("\t" + Position_10 + ": \t\t███░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 11 <= percent <= 20:
-			print ("\t" + Position_10 + ": \t\t██░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 1 <= percent <= 10:
-			print ("\t" + Position_10 + ": \t\t█░░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 0 <= percent <= 0:
-			print ("\t" + Position_10 + ": \t\t░░░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		else:
-			pass
-			
-	#Position 11
-	colorCount = 0
-	percent= 0
-	for glyph in font.glyphs:
-		layer = glyph.layers[master.id]
-		if layer.color == LightGreen:
-			colorCount += 1
-			percent = round((colorCount/glyphsCount)*100,1)
-			
-	if Position_11:		
-		if 100 <= percent <= 100:
-			print ("\t" + Position_11 + ": \t\t██████████"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 81 <= percent <= 99:
-			print ("\t" + Position_11 + ": \t\t█████████░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 71 <= percent <= 80:
-			print ("\t" + Position_11 + ": \t\t████████░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 61 <= percent <= 70:
-			print ("\t" + Position_11 + ": \t\t███████░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 51 <= percent <= 60:
-			print ("\t" + Position_11 + ": \t\t██████░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 41 <= percent <= 50:
-			print ("\t" + Position_11 + ": \t\t█████░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 31 <= percent <= 40:
-			print ("\t" + Position_11 + ": \t\t████░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 21 <= percent <= 30:
-			print ("\t" + Position_11 + ": \t\t███░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 11 <= percent <= 20:
-			print ("\t" + Position_11 + ": \t\t██░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 1 <= percent <= 10:
-			print ("\t" + Position_11 + ": \t\t█░░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 0 <= percent <= 0:
-			print ("\t" + Position_11 + ": \t\t░░░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		else:
-			pass
-			
-	#Position 12
-	colorCount = 0
-	percent= 0
-	for glyph in font.glyphs:
-		layer = glyph.layers[master.id]
-		if layer.color == LightGreen:
-			colorCount += 1
-			percent = round((colorCount/glyphsCount)*100,1)
-			
-	if Position_12:		
-		if 100 <= percent <= 100:
-			print ("\t" + Position_12 + ": \t\t██████████"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 81 <= percent <= 99:
-			print ("\t" + Position_12 + ": \t\t█████████░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 71 <= percent <= 80:
-			print ("\t" + Position_12 + ": \t\t████████░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 61 <= percent <= 70:
-			print ("\t" + Position_12 + ": \t\t███████░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 51 <= percent <= 60:
-			print ("\t" + Position_12 + ": \t\t██████░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 41 <= percent <= 50:
-			print ("\t" + Position_12 + ": \t\t█████░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 31 <= percent <= 40:
-			print ("\t" + Position_12 + ": \t\t████░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 21 <= percent <= 30:
-			print ("\t" + Position_12 + ": \t\t███░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 11 <= percent <= 20:
-			print ("\t" + Position_12 + ": \t\t██░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 1 <= percent <= 10:
-			print ("\t" + Position_12 + ": \t\t█░░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 0 <= percent <= 0:
-			print ("\t" + Position_12 + ": \t\t░░░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		else:
-			pass
-			
-	
-	#Position 13
-	colorCount = 0
-	percent= 0
-	for glyph in font.glyphs:
-		layer = glyph.layers[master.id]
-		if layer.color == LightGreen:
-			colorCount += 1
-			percent = round((colorCount/glyphsCount)*100,1)
-			
-	if Position_13:		
-		if 100 <= percent <= 100:
-			print ("\t" + Position_13 + ": \t\t██████████"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 81 <= percent <= 99:
-			print ("\t" + Position_13 + ": \t\t█████████░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 71 <= percent <= 80:
-			print ("\t" + Position_13 + ": \t\t████████░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 61 <= percent <= 70:
-			print ("\t" + Position_13 + ": \t\t███████░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 51 <= percent <= 60:
-			print ("\t" + Position_13 + ": \t\t██████░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 41 <= percent <= 50:
-			print ("\t" + Position_13 + ": \t\t█████░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 31 <= percent <= 40:
-			print ("\t" + Position_13 + ": \t\t████░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 21 <= percent <= 30:
-			print ("\t" + Position_13 + ": \t\t███░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 11 <= percent <= 20:
-			print ("\t" + Position_13 + ": \t\t██░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 1 <= percent <= 10:
-			print ("\t" + Position_13 + ": \t\t█░░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		elif 0 <= percent <= 0:
-			print ("\t" + Position_13 + ": \t\t░░░░░░░░░░"+ " %d" % colorCount + "/" + "%d" % glyphsCount)
-		else:
-			pass
-			
-			
-	colorCount = 0
-	print ("\n▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁\n")
-	
 Glyphs.showMacroWindow()
