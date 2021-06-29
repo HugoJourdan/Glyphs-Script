@@ -1,6 +1,6 @@
 # Font Dashboard
 
-This script allows you to follow the development progress of a file based on the Layer Color of your glyphs.
+This script allows you to follow the development progress of a file based on the Layer Color of your glyphs.  
 (PS : Layer Color and not Glyph Color, to set Layer Color, you have to press RightClick + Option)
 
 By default, the script is based on this color model :
