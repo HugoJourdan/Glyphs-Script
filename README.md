@@ -21,7 +21,7 @@ This script allows you to follow the development progress of a file based on the
 
 (PS : Layer Color and not Glyph Color, to set Layer Color, you have to press RightClick + Option).
 
-For more infos check the [GitHub](https://github.com/HugoJourdan/Glyphs-Script) repository.
+For more infos check the [GitHub](https://github.com/HugoJourdan/Glyphs-Script/tree/main/Font%20Dashboard) repository.
 
 ## Font Info
 * **Add version in FamilyName :** Add the version number at the end of the Family Name string
