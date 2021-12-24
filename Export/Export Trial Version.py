@@ -141,7 +141,10 @@ class TextEditorDemo:
 						instance.customParameters["Keep Glyphs"] = trialGlyphset
 						instance.generate(FontPath = SaveFolder, Containers = [fontFormat])						
 						instance.familyName = savedInstanceName
-						print("🅰️ %s %s generated\n--------------------------------------------------------" % (instance.familyName, instance.name))
+						if (instance.generate(FontPath = SaveFolder, Containers = [fontFormat])) is not True:
+							print("⚠️ %s-Trial cannot be generated (check compatibility)\n--------------------------------------------------------" % (instance.familyName, instance.name))
+						else:
+							print("🅰️ %s %s-Trial generated\n--------------------------------------------------------" % (instance.familyName, instance.name))
 					
 					else :
 						savedInstanceName = instance.name
@@ -149,7 +152,10 @@ class TextEditorDemo:
 						instance.customParameters["Keep Glyphs"] = trialGlyphset
 						instance.generate(FontPath = SaveFolder, Containers = [fontFormat])
 						instance.name = savedInstanceName
-						print("🅰️ %s generated\n--------------------------------------------------------" % savedInstanceName)
+						if (instance.generate(FontPath = SaveFolder, Containers = [fontFormat])) is not True:
+							print("⚠️ %s-Trial cannot be generated (check compatibility)\n--------------------------------------------------------" % savedInstanceName)
+						else:
+							print("🅰️ %s-Trial generated\n--------------------------------------------------------" % savedInstanceName)
 				else:
 					pass
 		# Delete Keep Glyph CP created
