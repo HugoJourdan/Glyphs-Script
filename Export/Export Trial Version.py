@@ -139,23 +139,23 @@ class TextEditorDemo:
 						savedInstanceName = instance.familyName
 						instance.familyName = instance.familyName.replace(" ", "-") + str("-Trial")
 						instance.customParameters["Keep Glyphs"] = trialGlyphset
-						instance.generate(FontPath = SaveFolder, Containers = [fontFormat])						
+						exportStatement = instance.generate(FontPath = SaveFolder, Containers = [fontFormat])
 						instance.familyName = savedInstanceName
-						if (instance.generate(FontPath = SaveFolder, Containers = [fontFormat])) is not True:
-							print("⚠️ %s-Trial cannot be generated (check compatibility)\n--------------------------------------------------------" % (instance.familyName, instance.name))
+						if exportStatement is not True:
+							print("⚠️ %s-Trial not generated correcly\n⚠️ (Export it with Cmd+E to access export report)\n--------------------------------------------------------" % (instance.familyName, instance.name))
 						else:
-							print("🅰️ %s %s-Trial generated\n--------------------------------------------------------" % (instance.familyName, instance.name))
+							print("✅ %s %s-Trial generated\n--------------------------------------------------------" % (instance.familyName, instance.name))
 					
 					else :
 						savedInstanceName = instance.name
 						instance.name = instance.name.replace(" ", "-") + str("-Trial")
 						instance.customParameters["Keep Glyphs"] = trialGlyphset
-						instance.generate(FontPath = SaveFolder, Containers = [fontFormat])
+						exportStatement = instance.generate(FontPath = SaveFolder, Containers = [fontFormat])
 						instance.name = savedInstanceName
-						if (instance.generate(FontPath = SaveFolder, Containers = [fontFormat])) is not True:
-							print("⚠️ %s-Trial cannot be generated (check compatibility)\n--------------------------------------------------------" % savedInstanceName)
+						if exportStatement is not True:
+							print("⚠️ %s-Trial not generated correcly\n⚠️ (Export it with Cmd+E to access export report)\n--------------------------------------------------------" % savedInstanceName)
 						else:
-							print("🅰️ %s-Trial generated\n--------------------------------------------------------" % savedInstanceName)
+							print("✅ %s-Trial generated\n--------------------------------------------------------" % savedInstanceName)
 				else:
 					pass
 		# Delete Keep Glyph CP created
