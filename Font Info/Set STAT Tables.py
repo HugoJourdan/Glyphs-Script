@@ -1,4 +1,4 @@
-#MenuTitle: (BETA) Set STAT Tables for instances
+#MenuTitle: Set STAT Tables for instances (BETA)
 # -*- coding: utf-8 -*-
 __doc__=""" Set STAT Tables for instances. This script is in BETA Version"
 """
