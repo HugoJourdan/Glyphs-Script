@@ -85,7 +85,9 @@ class TextEditorDemo:
 		
 		instanceActive = []
 		fontClass = []
+		global exportedGlyphsSave
 		exportedGlyphsSave = []
+		global featuresSave
 		featuresSave = {}
 		
 		for glyph in font.glyphs:
@@ -96,12 +98,11 @@ class TextEditorDemo:
 			classe.active = False
 		
 		for feature in font.features:
-			featuresSave[feature.name]=feature.code
+			featuresSave[feature.name] = feature.code, feature.automatic
 		
 		#Disable export for all glyphs	
 		for glyph in font.glyphs:
 			glyph.export = False
-		
 		
 		#Enable export for defaultTrialGlyphset glyphs
 		for glyph in font.glyphs:
@@ -110,73 +111,70 @@ class TextEditorDemo:
 					
 		#Update all features(twice for aalt)
 		for feature in font.features:
-			feature.update()
-		for feature in font.features:
-			feature.update()
+			del(font.features[0])
+
+		font.updateFeatures()
 		
 		if fontFormat == "TTF":
 			fontFormat = "plain"
 		
 		
 		for instance in font.instances:
-			if instance.active == True and instance.type == 0 :
+			if instance.active == True:
 				instanceActive.append(instance.name)
 				
 
 
 
 		
-		
 		print("════════════════════════════════════════════════════════\nFont : %s\nActive Instance : %s\n════════════════════════════════════════════════════════" % (font.familyName, len(instanceActive)))
 
 		for instance in font.instances:
-			if instance.active == True:
+			if instance.active == True :
 				
-				#If instance is INSTANCETYPESINGLE
-				if instance.type == 0 :
+				if instance.familyName:
+					savedInstanceName = instance.familyName
+					instance.familyName = instance.familyName.replace(" ", "-") + str("-Trial")
 					
-					if instance.familyName:
-						savedInstanceName = instance.familyName
-						instance.familyName = instance.familyName.replace(" ", "-") + str("-Trial")
-						instance.customParameters["Keep Glyphs"] = trialGlyphset
-						exportStatement = instance.generate(FontPath = SaveFolder, Containers = [fontFormat])
-						instance.familyName = savedInstanceName
-						if exportStatement is not True:
-							print("⚠️ %s-Trial not generated correcly\n⚠️ (Export it with Cmd+E to access export report)\n--------------------------------------------------------" % (instance.familyName, instance.name))
-						else:
-							print("✅ %s %s-Trial generated\n--------------------------------------------------------" % (instance.familyName, instance.name))
-					
-					else :
-						savedInstanceName = instance.name
-						instance.name = instance.name.replace(" ", "-") + str("-Trial")
-						instance.customParameters["Keep Glyphs"] = trialGlyphset
-						exportStatement = instance.generate(FontPath = SaveFolder, Containers = [fontFormat])
-						instance.name = savedInstanceName
-						if exportStatement is not True:
-							print("⚠️ %s-Trial not generated correcly\n⚠️ (Export it with Cmd+E to access export report)\n--------------------------------------------------------" % savedInstanceName)
-						else:
-							print("✅ %s-Trial generated\n--------------------------------------------------------" % savedInstanceName)
-				else:
-					pass
-		# Delete Keep Glyph CP created
-		for instance in font.instances:
-			del(instance.customParameters["Keep Glyphs"])
+					exportStatement = instance.generate(FontPath = SaveFolder, Containers = [fontFormat])
+					instance.familyName = savedInstanceName
+					if exportStatement is not True:
+						print(exportStatement)
+						print("⚠️ %s-Trial not generated correcly\n⚠️ (Export it with Cmd+E to access export report)\n--------------------------------------------------------" % (instance.familyName, instance.name))
+					else:
+						print("✅ %s %s-Trial generated\n--------------------------------------------------------" % (instance.familyName, instance.name))
+				
+				else :
+					savedInstanceName = instance.name
+					instance.name = instance.name.replace(" ", "-") + str("-Trial")
+					exportStatement = instance.generate(FontPath = SaveFolder, Containers = [fontFormat])
+					instance.name = savedInstanceName
+					if exportStatement is not True:
+						print(exportStatement)
+						print("⚠️ %s-Trial not generated correcly\n⚠️ (Export it with Cmd+E to access export report)\n--------------------------------------------------------" % savedInstanceName)
+					else:
+						print("✅ %s-Trial generated\n--------------------------------------------------------" % savedInstanceName)
+			else:
+				pass
+		#This duration depending on the number of glyphs in your font
+		print("Restoring initial instances... (it can last a minute)")
+
 		#Disable export for defaultTrialGlyphset glyphs
-		for glyph in font.glyphs:
-			if glyph.name in defaultTrialGlyphset:
-				glyph.export = False
+		for item in defaultTrialGlyphset:
+			font.glyphs[item].export = False
 		
 		#Restore exported glyphs from exportedGlyphSave
-		for glyph in font.glyphs:
-			if glyph.name in exportedGlyphsSave:
-				glyph.export = True
-		
+		for item in exportedGlyphsSave:
+			font.glyphs[item].export = True
+
+		for feature in font.features:
+			del(font.features[0])
+			
 		#Restore feature from featuresSave
-		for i in featuresSave:
-			for feature in font.features:
-				if feature.name == i:
-					feature.code = featuresSave[i]
-					
+		for item in featuresSave:
+			font.features.append(GSFeature(item, featuresSave[item][0]))
+			font.features[item].automatic = featuresSave[item][1]
+
 		for classe in font.classes:
 			classe.active = True
 				
