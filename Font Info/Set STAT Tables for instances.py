@@ -22,7 +22,7 @@ for instance in font.instances:
 		del(instance.customParameters[i])
 
 # Detect if another axe values except Width and Weight axes are diffrent from 0
-for instance in font.instances:
+for instance.type == 0 in font.instances:
 	OtherAxeInstance = True
 	OtherAxeInstanceDic = []
 	for tag in fontAxes:
