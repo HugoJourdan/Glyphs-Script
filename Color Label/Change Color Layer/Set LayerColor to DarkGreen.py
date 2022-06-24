@@ -1,4 +1,4 @@
-#MenuTitle: Change LayerColor to DarkGreen
+#MenuTitle: Set LayerColor to DarkGreen
 # -*- coding: utf-8 -*-
 
 font = Glyphs.font

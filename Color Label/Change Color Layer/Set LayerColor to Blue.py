@@ -1,4 +1,4 @@
-#MenuTitle: Change LayerColor to DarkBlue
+#MenuTitle: Set LayerColor to Blue
 # -*- coding: utf-8 -*-
 
 font = Glyphs.font
@@ -6,4 +6,4 @@ font = Glyphs.font
 selectedLayers = font.selectedLayers
 for thisLayer in selectedLayers:
 	thisGlyph = thisLayer.parent
-	thisGlyph.layers[font.selectedFontMaster.id].color = 7
+	thisGlyph.layers[font.selectedFontMaster.id].color = 6
