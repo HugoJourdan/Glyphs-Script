@@ -68,6 +68,11 @@ It use data from [Reveland Kerning Raw.json](https://github.com/andre-fuchs/kern
 
 <br>
 
+## `Selection`
+* **`Selected point handles`**
+
+<br>
+
 ## `Spacing`
 * **`Spacing String Maker`**
 
