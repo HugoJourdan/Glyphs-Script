@@ -17,7 +17,6 @@ font = Glyphs.font
 # Generate code for custom parameter "glyphOrder"
 def GenerateLayerColorGlyphOrder():
 	colorMeaning = Map_Keys(Get_Key_File())
-	print(colorMeaning)
 	colorLabels = {}
 	masterID = font.selectedFontMaster.id
 	for glyph in font.glyphs:
@@ -25,12 +24,13 @@ def GenerateLayerColorGlyphOrder():
 		if color not in colorLabels:
 			colorLabels[color] = []
 		colorLabels[color].append(glyph.name)
-
-	colorLabels[13] = colorLabels.pop(None)
+	if colorLabels[13]:
+		colorLabels[13] = colorLabels.pop(None)
 	myKeys = list(colorLabels.keys())
 	myKeys.sort()
 	colorLabels = {i: colorLabels[i] for i in myKeys}
-	colorLabels["Not set"] = colorLabels.pop(13)
+	if colorLabels[13]:
+		colorLabels["Not set"] = colorLabels.pop(13)
 
 	code = ["#Color Layer Filter:"]
 	for color, glyph in colorLabels.items():
