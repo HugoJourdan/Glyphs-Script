@@ -3,6 +3,7 @@
 __doc__="""
 Generates a new "glyphOrder" that filters glyphs according to the colour of the selected master layer.
 If a glyphOrder already exists, it will create a new one, and switch them when the script is triggered.
+glyphOrder need script to be triggered to be update.
 """
 
 
