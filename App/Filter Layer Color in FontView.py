@@ -14,65 +14,6 @@ import re
 font = Glyphs.font
 
 
-
-# Generate code for custom parameter "glyphOrder"
-def GenerateLayerColorGlyphOrder():
-	colorMeaning = Map_Keys(Get_Key_File())
-	colorLabels = {}
-	masterID = font.selectedFontMaster.id
-	for glyph in font.glyphs:
-		color = glyph.layers[masterID].color
-		if color not in colorLabels:
-			colorLabels[color] = []
-		colorLabels[color].append(glyph.name)
-	if colorLabels[13]:
-		colorLabels[13] = colorLabels.pop(None)
-	myKeys = list(colorLabels.keys())
-	myKeys.sort()
-	colorLabels = {i: colorLabels[i] for i in myKeys}
-	if colorLabels[13]:
-		colorLabels["Not set"] = colorLabels.pop(13)
-
-	code = ["#Color Layer Filter:"]
-	for color, glyph in colorLabels.items():
-		if str(color) in colorMeaning.keys():
-			code.append(f"**{colorMeaning[str(color)]}**")
-			code.extend(glyph)
-
-	return code
-
-if  Glyphs.font.customParameters["glyphOrder"] == None:
-	Glyphs.font.customParameters["glyphOrder"] = GenerateLayerColorGlyphOrder()
-	newParam = GSCustomParameter.alloc().init()
-	newParam.name = "glyphOrder"
-	newParam.value = ()
-	font.addCustomParameter_(newParam)
-
-CP = list(Glyphs.font.customParameters)
-
-index = []
-for cp in CP:
-	i = CP.index(cp)
-	if cp.name == "glyphOrder":
-		index.append(i)
-
-if len(index) <= 1 :
-	newParam = GSCustomParameter.alloc().init()
-	newParam.name = "glyphOrder"
-	newParam.value = GenerateLayerColorGlyphOrder()
-	font.addCustomParameter_(newParam)
-
-first = CP[index[0]].copy()
-second = CP[index[1]].copy()
-
-Glyphs.font.customParameters[index[0]].value = second.value
-Glyphs.font.customParameters[index[1]].value = first.value
-#print(Glyphs.font.customParameters[index[0]].value)
-if "#Color Layer Filter:" in Glyphs.font.customParameters[index[0]].value:
-	Glyphs.font.customParameters[index[0]].value = GenerateLayerColorGlyphOrder()
-if "#Color Layer Filter:" in Glyphs.font.customParameters[index[1]].value:
-	Glyphs.font.customParameters[index[1]].value = GenerateLayerColorGlyphOrder()
-
 # Get or build colorNames.text
 def Get_Key_File():
 	keyFile = None
@@ -116,4 +57,66 @@ def Map_Keys(keyFile):
 
 	colourLabels = switch
 	return colourLabels
+
+
+# Generate code for custom parameter "glyphOrder"
+def GenerateLayerColorGlyphOrder():
+	colorMeaning = Map_Keys(Get_Key_File())
+	colorLabels = {}
+	masterID = font.selectedFontMaster.id
+	for glyph in font.glyphs:
+		color = glyph.layers[masterID].color
+		if color not in colorLabels:
+			colorLabels[color] = []
+		colorLabels[color].append(glyph.name)
+	if None in colorLabels:
+		colorLabels[13] = colorLabels.pop(None)
+	myKeys = list(colorLabels.keys())
+	myKeys.sort()
+	colorLabels = {i: colorLabels[i] for i in myKeys}
+	if 13 in colorLabels:
+		colorLabels["Not set"] = colorLabels.pop(13)
+
+	code = ["#Color Layer Filter:"]
+	for color, glyph in colorLabels.items():
+		if str(color) in colorMeaning.keys():
+			code.append(f"**{colorMeaning[str(color)]}**")
+			code.extend(glyph)
+
+	return code
+
+if  Glyphs.font.customParameters["glyphOrder"] == None:
+	Glyphs.font.customParameters["glyphOrder"] = GenerateLayerColorGlyphOrder()
+	newParam = GSCustomParameter.alloc().init()
+	newParam.name = "glyphOrder"
+	newParam.value = ()
+	font.addCustomParameter_(newParam)
+
+CP = list(Glyphs.font.customParameters)
+
+index = []
+for cp in CP:
+	i = CP.index(cp)
+	if cp.name == "glyphOrder":
+		index.append(i)
+
+if len(index) <= 1 :
+	newParam = GSCustomParameter.alloc().init()
+	newParam.name = "glyphOrder"
+	newParam.value = GenerateLayerColorGlyphOrder()
+	font.addCustomParameter_(newParam)
+
+first = CP[index[0]].copy()
+second = CP[index[1]].copy()
+
+Glyphs.font.customParameters[index[0]].value = second.value
+Glyphs.font.customParameters[index[1]].value = first.value
+#print(Glyphs.font.customParameters[index[0]].value)
+if "#Color Layer Filter:" in Glyphs.font.customParameters[index[0]].value:
+	Glyphs.font.customParameters[index[0]].value = GenerateLayerColorGlyphOrder()
+if "#Color Layer Filter:" in Glyphs.font.customParameters[index[1]].value:
+	Glyphs.font.customParameters[index[1]].value = GenerateLayerColorGlyphOrder()
+
+
+
 
