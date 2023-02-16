@@ -9,6 +9,7 @@ Some Python scripts to be used with the Glyphs font editor, written by Hugo Jour
 ## 💿 App
 * **`Toggle Preview Blur`** : Useful if used with shortcut.
 * **`Toggle Reporters`** : Show/Hide all activated reporters.
+* **`CleanMyGlyphs`** : All-in-one script to make your Glyphs file sparkle. It cleans up megatons of rubbish and makes your file look brand new. Just like the first day.
 
 
 
