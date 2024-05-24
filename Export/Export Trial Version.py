@@ -109,7 +109,7 @@ class TextEditorDemo:
 
 		font.updateFeatures()
 
-		if fontFormat in TTF:
+		if fontFormat in (TTF, OTF):
 			fontFormat = PLAIN
 
 		for instance in font.instances:
