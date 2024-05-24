@@ -38,14 +38,22 @@ class ExportTrialVersion:
 		linePos += 88
 		linePos += lineHeight
 
-		self.w.text = TextBox((inset, linePos, -inset, 40), "Export format :", sizeStyle='small')
-		self.w.popUpButton = PopUpButton((inset + 85, linePos - 2, -inset - 220, 17), [TTF, OTF, WOFF, WOFF2], sizeStyle='small')
+		self.w.text = TextBox((inset, linePos, -inset, 40), "Export format:", sizeStyle='small')
+		items = [TTF, OTF, WOFF, WOFF2]
+		self.w.popUpButton = PopUpButton((inset + 85, linePos - 2, -inset - 220, 17), items, sizeStyle='small', callback=self.exportFormatCallback)
+		selectedItem = Glyphs.defaults["com.hugjourdan.ExportFontTrials.selectedFormat"]
+		if selectedItem and selectedItem in items:
+			self.w.popUpButton.setItem(selectedItem)
 
 		linePos += lineHeight
 
 		self.w.buttonFolder = Button((inset, linePos, -inset - 188, 20), "Select Save Folder", callback=self.buttonFolderCallback)
 		self.w.buttonGenerate = Button((inset + 188, linePos, -inset, 20), "Generate trials", callback=self.buttonGenerateCallback)
-		self.w.buttonGenerate.enable(False)
+
+		saveFolder = Glyphs.defaults["com.hugjourdan.ExportFontTrials.saveFolder"]
+		if saveFolder is None:
+			self.w.buttonGenerate.enable(False)
+
 		self.w.setDefaultButton(self.w.buttonGenerate)
 
 		self.w.bind("close", self.windowClosed)
@@ -59,17 +67,33 @@ class ExportTrialVersion:
 		Glyphs.defaults["com.hugjourdan.ExportFontTrials.windowPosX"] = windowPosSize[0]
 		Glyphs.defaults["com.hugjourdan.ExportFontTrials.windowPosY"] = windowPosSize[1]
 
+	def exportFormatCallback(self, sender):
+		fontFormat = self.w.popUpButton.getItem()
+		Glyphs.defaults["com.hugjourdan.ExportFontTrials.selectedFormat"] = fontFormat
+
 	def buttonFolderCallback(self, sender):
-		global SaveFolder
-		SaveFolder = GetFolder(message='Select save location', allowsMultipleSelection=False, path=None)
-		if SaveFolder:
+		saveFolder = GetFolder(message='Select save location', allowsMultipleSelection=False, path=None)
+		if saveFolder:
+			Glyphs.defaults["com.hugjourdan.ExportFontTrials.saveFolder"] = saveFolder
 			self.w.buttonGenerate.enable(True)
+		else:
+			self.w.buttonGenerate.enable(False)
 
 	def buttonGenerateCallback(self, sender):
-		Glyphs.font.disableUpdateInterface()
+
 		Glyphs.clearLog()
 		Glyphs.showMacroWindow()
-		print("[Export Trial Version is running]\nSave location : %s" % SaveFolder)
+
+		print("[Export Trial Version is running]")
+
+		saveFolder = Glyphs.defaults["com.hugjourdan.ExportFontTrials.saveFolder"]
+
+		if not saveFolder or len(saveFolder) < 5:
+			print("Please set saveFolder")
+			return
+
+		Glyphs.font.disableUpdateInterface()
+		print("Save location : %s" % saveFolder)
 
 		global trialGlyphset
 		trialGlyphset = self.w.textEditor.get()
@@ -125,7 +149,7 @@ class ExportTrialVersion:
 					savedInstanceName = instance.name
 					instance.name = instance.name.replace(" ", "-") + str("-TRIAL")
 
-					exportStatement = instance.generate(FontPath=SaveFolder, Containers=[fontFormat])
+					exportStatement = instance.generate(FontPath=saveFolder, Containers=[fontFormat])
 					instance.name = savedInstanceName
 					if exportStatement is not True:
 						print(exportStatement)
@@ -136,7 +160,7 @@ class ExportTrialVersion:
 				else:
 					savedInstanceName = instance.name
 					instance.name = instance.name.replace(" ", "-") + str("-Trial")
-					exportStatement = instance.generate(FontPath=SaveFolder, Containers=[fontFormat])
+					exportStatement = instance.generate(FontPath=saveFolder, Containers=[fontFormat])
 					instance.name = savedInstanceName
 					if exportStatement is not True:
 						print(exportStatement)
