@@ -9,7 +9,7 @@ from vanilla import FloatingWindow, TextBox, TextEditor, PopUpButton, Button
 from GlyphsApp import Glyphs, GSFeature, GetFolder, Message, PLAIN, TTF, OTF, WOFF, WOFF2
 
 
-class TextEditorDemo:
+class ExportTrialVersion:
 
 	global defaultTrialGlyphset
 
@@ -171,4 +171,4 @@ class TextEditorDemo:
 		Glyphs.font.enableUpdateInterface()
 
 
-TextEditorDemo()
+ExportTrialVersion()
