@@ -6,7 +6,7 @@ Export trials for all active instances (except variable instance)
 """
 
 from vanilla import FloatingWindow, TextBox, TextEditor, PopUpButton, Button
-from GlyphsApp import Glyphs, GSFeature, GetFolder, Message
+from GlyphsApp import Glyphs, GSFeature, GetFolder, Message, PLAIN, TTF, OTF, WOFF, WOFF2
 
 
 class TextEditorDemo:
@@ -39,7 +39,7 @@ class TextEditorDemo:
 		linePos += lineHeight
 
 		self.w.text = TextBox((inset, linePos, -inset, 40), "Export format :", sizeStyle='small')
-		self.w.popUpButton = PopUpButton((inset + 85, linePos - 2, -inset - 220, 17), ["TTF", "OTF", "WOFF", "WOFF2"], sizeStyle='small')
+		self.w.popUpButton = PopUpButton((inset + 85, linePos - 2, -inset - 220, 17), [TTF, OTF, WOFF, WOFF2], sizeStyle='small')
 
 		linePos += lineHeight
 
@@ -109,8 +109,8 @@ class TextEditorDemo:
 
 		font.updateFeatures()
 
-		if fontFormat == "TTF":
-			fontFormat = "plain"
+		if fontFormat in TTF:
+			fontFormat = PLAIN
 
 		for instance in font.instances:
 			if instance.active:
